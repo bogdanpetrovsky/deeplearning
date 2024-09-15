@@ -1,0 +1,7 @@
+cc -o elemgen.exe elemgen.cpp
+echo "-0.1 0.1 1000 12345" | ./elemgen.exe > elem_node.dat
+cc -o elemshape.exe elemshape.cpp -lm
+./elemshape.exe < elem_node.dat > elem_shape.dat  cc -O3 -o elemconv.exe elemconv.cpp -lm
+./elemconv.exe < elem_node.dat > elem_conv.dat
+cc -o elemngp.exe elemngp.cpp
+./elemngp.exe < elem_conv.dat > elem_ngp.dat

@@ -4,10 +4,14 @@
 //
 //  Created by Bogdan Petrovsky on 02.06.2024.
 //
-
-#include "elemgen.hpp"
 #include<cmath>
 #include<math.h>
+//#include "elemgen.hpp"
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#define rnode drand48()*(cmax-cmin)+cmin
 
 using namespace std;
 
@@ -170,15 +174,16 @@ void inv_mat3 (double invA[][3], double A[][3]) {
     det = A[0] [0]*A[1] [1]*A[2] [2] + A[0] [1]*A[1][2]*A[2] [0]
     + A[0] [2]*A[1][0]*A[2][1] - A[0] [0]*A[1][2]*A[2] [1]
     - A[0] [1]*A[1] [0]*A[2] [2] - A[0] [2]*A[1] [1]*A[2] [0] ;
-    invA[0] [0] = (A[1] [1]*A[2] [2] - A[1] [2] *A[2] [1]) /det;
-    invA[0] [1] = (A[0] [2]*A[2] [1] - A[0] [1] *A[2] [2]) /det;
-    invA[0] [2] = (A[0] [1]*A[1] [2] - A[1] [1] *A[0] [2]) /det;
-    invA[1][0] = (A[1][2]*A[2] [0] - A[1] [0]*A[2] [2])/det;
-    invA[1][1] = (A[0] [0]*A[2] [2] - A[0] [2]*A[2] [0])/det;
-    invA[1] [2] = (A[1] [0]*A[0] [2] - A[0] [0]*A[1] [2]) /det;
-    invA[2] [0] = (A[1] [0]*A[2] [1] - A[1] [1] *A[2] [0]) /det;
-    invA[2] [1] = (A[0] [1]*A[2] [0] - A[0] [0]*A[2] [1]) /det;
-    invA[2] [2] = (A[0] [0]*A[1] [1] - A[0] [1] *A[1] [0]) /det;
+    
+    invA[0][0] = (A[1][1]*A[2][2] - A[1][2]*A[2][1]) /det;
+    invA[0][1] = (A[0][2]*A[2][1] - A[0][1]*A[2][2]) /det;
+    invA[0][2] = (A[0][1]*A[1][2] - A[1][1]*A[0][2]) /det;
+    invA[1][0] = (A[1][2]*A[2][0] - A[1][0]*A[2][2]) /det;
+    invA[1][1] = (A[0][0]*A[2][2] - A[0][2]*A[2][0]) /det;
+    invA[1][2] = (A[1][0]*A[0][2] - A[0][0]*A[1][2]) /det;
+    invA[2][0] = (A[1][0]*A[2][1] - A[1][1]*A[2][0]) /det;
+    invA[2][1] = (A[0][1]*A[2][0] - A[0][0]*A[2][1]) /det;
+    invA[2][2] = (A[0][0]*A[1][1] - A[0][1]*A[1][0]) /det;
 }
 
 void matMulti3 (double C[][3], double A[][3], double B[][3]) {
@@ -195,7 +200,7 @@ double f_norm3 (double A[][3] ) {
     double dsum;
     dsum = 0.0;
     for (i=0;i<3;i++)
-        for(j = 0;i < 3;j++)
+        for(j = 0;j < 3;j++)
             dsum += A[i][j]*A[i][j];
     
     return dsum ;
@@ -261,7 +266,7 @@ void check_shape (double *s_data,int *elem,double **node,int nfpn) {
     
     for (i = 0; i<=3; i++) {
         for (j=0;j<nfpn;j++)
-            e[i][j] = ndata[(i+1)%4] [j] - ndata[i][j];
+            e[i][j] = ndata[(i+1)%4][j] - ndata[i][j];
         
         for (j=0,d1=0.0;j<nfpn;j++) d1 += e[i][j] *e[i][j];
         dl[i] = sqrt(d1) ;
@@ -285,7 +290,7 @@ void check_shape (double *s_data,int *elem,double **node,int nfpn) {
     }
     /*- anglel --*/
     for (n=0;n<nnpe;n++) {
-        for (i=0;i<nfpn;i++) dx0 [i] = sg[n][0]*e[idx[n][0]][i];
+        for (i=0;i<nfpn;i++) dx0[i] = sg[n][0]*e[idx[n][0]][i];
         for (i=0;i<nfpn;i++) dx1[i] = sg[n][1]*e[idx[n][1]][i];
         for (i=0;i<nfpn;i++) dx2[i] = sg[n][2]*e[idx[n][2]][i];
         
@@ -295,9 +300,11 @@ void check_shape (double *s_data,int *elem,double **node,int nfpn) {
         nv[n][0][0] = dx2[1] * dx1[2] - dx2[2] * dx1[1];
         nv[n][0][1] = dx2[2] * dx1[0] - dx2[0] * dx1[2];
         nv[n][0][2] = dx2[0] * dx1[1] - dx2[1] * dx1[0];
+        
         nv[n][1][0] = dx1[1] * dx0[2] - dx1[2] * dx0[1];
         nv[n][1][1] = dx1[2] * dx0[0] - dx1[0] * dx0[2];
         nv[n][1][2] = dx1[0] * dx0[1] - dx1[1] * dx0[0];
+        
         nv[n][2][0] = dx0[1] * dx2[2] - dx0[2] * dx2[1];
         nv[n][2][1] = dx0[2] * dx2[0] - dx0[0] * dx2[2];
         nv[n][2][2] = dx0[0] * dx2[1] - dx0[1] * dx2[0];
@@ -321,7 +328,7 @@ void check_shape (double *s_data,int *elem,double **node,int nfpn) {
     }
     /* -minmax- */
     dl_max = -1.0;
-    dl_min = 1.030;
+    dl_min = 1.0e30;
     for(i=0;i<12;i++) {
         if(dl[i] > dl_max) dl_max = dl[i];
         if(dl[i] < dl_min) dl_min = dl[i];
@@ -407,9 +414,9 @@ void Bspline00 (double *N, double *dN, double xi, int ni,int p,int nkv, double *
 /*ーー*/
 void BsplinelD(double *N, double *dN, int n, double xi, int p, int nkv, double *KV) {
     int i,j, k, nb;
-    double d1, a2, d3;
+    double d1, d2, d3;
     for (i=0;i<n;i++){
-        N[2] = 0.0;
+        N[i] = 0.0;
         dN[i] = 0.0;
     } for (i=0;i<nkv;i++)
         if ((xi >= KV[i]) && (xi < KV[i+1])) break ;
@@ -653,32 +660,32 @@ void back_propagation ( int p,float **t,float **zIU, float **zHU, float **zdHU, 
     for (j=0; j<nHU[1];j++) {
         for (i=0;i<nIU;i++) {
             dw[0][j][i] = Alpha*d[1][j]*zIU[p][i] + Mom2*dw[0][j][i];
-            + Mom2*dw[0][j][i];
+//            + Mom2*dw[0][j][i];
             w[0][j][i] += dw[0][j][i];
         }
     }
 }
 /*--*/
+#define rnode drand48()*(cmax-cmin)+cmin
 
-int main(int argc, const char * argv[]) {
-//    elemgen();
-    int i,j,k,ia, ib, nel, nfpn=3, nnpe=8, elem[8]={0,1,2,3,4,5, 6,7} ;
-    double eshape [7], **node;
-    scanf ("%d",&nel) ;
-    printf ("%d\n", nel) ;
-    node = (double **)malloc (nnpe*sizeof (double *) );
-    for (i=0;i<nnpe;i++) node[i] = (double *)malloc (nfpn*sizeof(double)) ;
-    for (i=0;i<nel;i++) {
-        for (j=0;j<nnpe;j++) {
-            scanf ("%d %d",&ia, &ib);
-            for (k=0;k<nfpn;k++) scanf ("%le", node[j]+k);
-        }
-        check_shape(eshape, elem, node, nfpn) ;
-        eshape [6] = shape_metric (elem, node, nnpe, nfpn);
-        printf ("%d", i);
-        for(j=0;j<7;j++) printf("%e", eshape[j]);
-        printf ("\n");
-    }
-
-    return 0;
-}
+//int main(void) {
+//    int i,j,k,ia, ib, nel, nfpn=3, nnpe=8, elem[8]={0,1,2,3,4,5, 6,7} ;
+//    double eshape [7], **node;
+//    scanf ("%d",&nel) ;
+//    printf ("%d\n", nel) ;
+//    node = (double **)malloc (nnpe*sizeof (double *) );
+//    for (i=0;i<nnpe;i++) node[i] = (double *)malloc (nfpn*sizeof(double)) ;
+//    for (i=0;i<nel;i++) {
+//        for (j=0;j<nnpe;j++) {
+//            scanf ("%d %d",&ia, &ib);
+//            for (k=0;k<nfpn;k++) scanf ("%le", node[j]+k);
+//        }
+//        check_shape(eshape, elem, node, nfpn) ;
+//        eshape [6] = shape_metric (elem, node, nnpe, nfpn);
+//        printf ("%d", i);
+//        for(j=0;j<7;j++) printf(" %e", eshape[j]);
+//        printf ("\n");
+//    }
+//
+//    return 0;
+//}

@@ -34,12 +34,12 @@ int main() {
         for (j=2;j<8;j++) {
             for (k=0;k<3;k++) node[j][k] = node0[j][k] + rnode;
         }
-    }
-    node [3] [2] = 0.0;
-    for (j=0;j<8;j++) {
-        printf("%d %d", i, j);
-        for (k=0;k<3;k++) printf (" %e" ,node[j][k]);
-            printf ("\n");
+        node [3] [2] = 0.0;
+        for (j=0;j<8;j++) {
+            printf("%d %d", i, j);
+            for (k=0;k<3;k++) printf (" %e" ,node[j][k]);
+                printf ("\n");
+        }
     }
     return 0;
 }
