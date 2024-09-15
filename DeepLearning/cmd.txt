@@ -1,7 +1,15 @@
 cc -o elemgen.exe elemgen.cpp
 echo "-0.1 0.1 1000 12345" | ./elemgen.exe > elem_node.dat
 cc -o elemshape.exe elemshape.cpp -lm
-./elemshape.exe < elem_node.dat > elem_shape.dat  cc -O3 -o elemconv.exe elemconv.cpp -lm
+./elemshape.exe < elem_node.dat > elem_shape.dat
+
+cc -O3 -o elemconv.exe elemconv.cpp -lm
 ./elemconv.exe < elem_node.dat > elem_conv.dat
 cc -o elemngp.exe elemngp.cpp
 ./elemngp.exe < elem_conv.dat > elem_ngp.dat
+
+cc -o shapeNN.exe shapeNN.cpp
+./shapeNN.exe > elem_shapeNN.dat
+
+cc -o npgNN.exe npgNN.cpp
+./npgNN.exe > elem_npgNN.dat
