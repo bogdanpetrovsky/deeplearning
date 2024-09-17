@@ -81,6 +81,7 @@ void load_weight (char *fname,double ***w, double **bias, int nIU, int *nHU, int
     for (iL=1; iL<=nHL+1; iL++) {
         for (j=0;j<nHU[iL];j++) fscanf (fp, "%le" ,bias[iL]+j);
     }
+    printf("%f \n", bias[iL-1][j-1]);
     fclose (fp) ;
 }
 
@@ -93,12 +94,15 @@ void initialize(double ***w, double **bias, int nIU, int *nHU, int nOU, int nHL)
         for(i=0;i<nHU[j];i++) bias[j][i] = rnd();
 }
 void store_weight (double ***w, double **bias, double ***w_min, double **bias_min, int nIU, int *nHU, int noU, int nHL) {
+    printf("Stored weight:\n");
 int i,j,k;
 for (i=0;i<=nHL;i++)
     for(j=0;j<nHU[i+1];j++)
         for (k=0;k<nHU[i];k++) w_min [i][j][k] =w[i][j][k];
     for(j = 1;j<=nHL+1;j++)
         for (i=0;i<nHU[j];i++) bias_min[j][i] =bias[j][i] ;
+    
+    printf("\nStored weight end\n");
 }
 /*--*/
 void show_results ( double ***w, double **bias, double ***w_m, double **bias_m, int nIU, int *nHU, int nou, int nHL) {
@@ -115,6 +119,7 @@ void show_results ( double ***w, double **bias, double ***w_m, double **bias_m, 
         for (j=0; j<nHU[iL];j++) printf("%e ",bias_m[iL][j]);
         printf ("\n") ;
     }
+    printf ("\nWeights: \n");
     for (iL=0;iL<=nHL;iL++) {
         for (i=0;i<nHU[iL];i++) {
             printf ("%5d", i);
@@ -123,6 +128,7 @@ void show_results ( double ***w, double **bias, double ***w_m, double **bias_m, 
             printf ("\n");
         }
     }
+    printf ("\nBiases: \n");
     for (iL=1; iL<=nHL+1;iL++) {
         for(j=0;j<nHU[iL];j++) printf("%e ", bias[iL][j]);
         printf ("\n");
@@ -205,7 +211,7 @@ void back_propagation ( int p,double **t,double **zIU, double **zHU, double **zd
     }
 }
 
-int main () {
+int main1 () {
     int i,j,k, iteration_min, i1, j1,rseed, o_freq, MaxPattern, MaxEpochs, lp_no, tp_no,nIU, nOU, *nHU, nHL, nHU0, nhflag,
     *idx1;
     double *zOU, **zOU_min, **zHU, **zIU, **zIUor, ***w, **bias,***dw, **dbias, ***w_min, **bias_min, **dtemp, **zdHU, *zdOU, ef1, ef2, ef2_min=16,NoiseLevel, Alpha, Beta, **t ; char fname1[FNAMELENGTH];
@@ -222,6 +228,7 @@ int main () {
     }
     nHU [0] = nIU;
     nHU [nHL+1] = nOU;
+
     /*-----*/
     t = matrix(0,MaxPattern-1,0, nOU-1);
     zIU = matrix (0,MaxPattern-1,0,nIU-1) ;
@@ -243,13 +250,13 @@ int main () {
     for(i=0;i<=nHL;i++)
         dw[i] = matrix(0,nHU[i+1]-1,0,nHU[i]-1) ;
     bias = (double **)malloc ((nHL+2) *sizeof (double *));
-    for(i=0;1<=nHL+1;i++) bias[i] = vector(0, nHU[i]-1);
+    for(i=0;i<=nHL+1;i++) bias[i] = vector(0, nHU[i]-1);
     bias_min = (double **)malloc ((nHL+2) *sizeof(double *));
-    for (i=0; i<=nHL+1;i++) bias_min[i] = vector (0, nHU [i]-1);
+    for (i=0; i<=nHL+1;i++) bias_min[i] = dvector (0, nHU [i]-1);
     dbias = (double **)malloc ((nHL+2) *sizeof (double *));
-    for(i=0;i<=nHL+1;i++) dbias[i] = vector(0, nHU[i]-1);
+    for(i=0;i<=nHL+1;i++) dbias[i] = dvector(0, nHU[i]-1);
     dtemp = (double **)malloc ((nHL+2)*sizeof(double *));
-    for (i=0; i<nHL+2;i++) dtemp[i] = vector (0, nHU [i]-1);
+    for (i=0; i<nHL+2;i++) dtemp[i] = dvector (0, nHU [i]-1);
     
     idx1 = (int *)malloc(lp_no*sizeof (int));
     for (i=0;i<lp_no;i++) idx1[i]=i ;

@@ -43,12 +43,12 @@ int main()
     for(i=0;i<=nHL;i++) w[i] = matrix(0, nHU[i+1]-1,0,nHU[i]-1);
     bias = (double **)malloc ((nHL+2) *sizeof (double *));
     for (i=0;i<=nHL+1;i++) bias [i] = vector (0,nHU[i]-1) ;
-    
     read_fileA (fname1, zIU,nIU,MaxPattern);
+    printf("%d %d %d \n", nIU, nOU, nHL);
     load_weight (fname2,w, bias, nIU, nHU, nOU, nHL) ;
     for (i=0; i<MaxPattern; i++){
         propagation (i, zIU, zHU, zdHU, zOU, zdOU, w, bias, nIU, nHU,nOU, nHL);
-        printf ("%d", i) ;
+        printf ("%d", i);
         
         for(j=0;j<nOU;j++) printf(" %e", zOU[j]);
         printf ("\n" ) ;
