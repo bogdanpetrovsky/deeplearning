@@ -13,3 +13,13 @@ cc -o shapeNN.exe shapeNN.cpp
 
 cc -o npgNN.exe npgNN.cpp
 ./npgNN.exe > elem_npgNN.dat
+
+cc -o patternNN.exe patternNN.cpp
+echo "7 5" | ./patternNN.exe > patternNN.dat
+
+
+cc -O3 -o DLneuro.exe DLneuro.cpp -lm
+echo "1000 800 5 20 3 2 0 5000 100 indata.dat 12345 0.1 0.1 0.001" | ./DLneuro.exe > result.txt
+
+ cc -O3 -o DAneuro.exe DAneuro.cpp -lm
+ echo "10 7 80 5 3 0 NewElem.dat Weights.dat" | ./DAneuro.exe > rngp.dat
