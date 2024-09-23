@@ -51,7 +51,7 @@ void read_file( char *name, double **o,double **t,int nIU, int nOU, int npattern
     fp = fopen( name, "r" ) ;
     for (i=0; i<npattern; i++) { fscanf (fp, "%d", &k) ;
         for (j=0;j<nIU;j++) fscanf (fp, "%le", o[i]+j);
-        for (j=0;j<nOU;j++) fscanf (fp, "%le", t[1]+j);
+        for (j=0;j<nOU;j++) fscanf (fp, "%le", t[i]+j);
     }
     fclose(fp);
 }
@@ -81,7 +81,6 @@ void load_weight (char *fname,double ***w, double **bias, int nIU, int *nHU, int
     for (iL=1; iL<=nHL+1; iL++) {
         for (j=0;j<nHU[iL];j++) fscanf (fp, "%le" ,bias[iL]+j);
     }
-    printf("%f \n", bias[iL-1][j-1]);
     fclose (fp) ;
 }
 
@@ -94,7 +93,6 @@ void initialize(double ***w, double **bias, int nIU, int *nHU, int nOU, int nHL)
         for(i=0;i<nHU[j];i++) bias[j][i] = rnd();
 }
 void store_weight (double ***w, double **bias, double ***w_min, double **bias_min, int nIU, int *nHU, int noU, int nHL) {
-    printf("Stored weight:\n");
 int i,j,k;
 for (i=0;i<=nHL;i++)
     for(j=0;j<nHU[i+1];j++)
@@ -102,7 +100,6 @@ for (i=0;i<=nHL;i++)
     for(j = 1;j<=nHL+1;j++)
         for (i=0;i<nHU[j];i++) bias_min[j][i] =bias[j][i] ;
     
-    printf("\nStored weight end\n");
 }
 /*--*/
 void show_results ( double ***w, double **bias, double ***w_m, double **bias_m, int nIU, int *nHU, int nou, int nHL) {

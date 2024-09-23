@@ -31,6 +31,8 @@ int main()
     }
     nHU [0] = nIU ;
     nHU [nHL+1] = nOU ;
+    printf(fname1);
+    printf(fname2);
     
     zIU = matrix (0,MaxPattern-1,0,nIU-1) ;
     zHU = (double **)malloc ((nHL+2)*sizeof(double *)) ;
@@ -46,6 +48,11 @@ int main()
     read_fileA (fname1, zIU,nIU,MaxPattern);
     printf("%d %d %d \n", nIU, nOU, nHL);
     load_weight (fname2,w, bias, nIU, nHU, nOU, nHL) ;
+    for (i = 0; i< nHL+1;i++) printf ("%f ", w[i][1]);
+    printf("\n");
+    for (i = 0; i< nHL+2;i++) printf ("%f ", bias[i][1]);
+    printf("\n");
+    
     for (i=0; i<MaxPattern; i++){
         propagation (i, zIU, zHU, zdHU, zOU, zdOU, w, bias, nIU, nHU,nOU, nHL);
         printf ("%d", i);
